@@ -1,23 +1,19 @@
 #include <SFML/Graphics.hpp>
+#include "engine.h"
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-	sf::CircleShape shape(100.f);
-	shape.setFillColor(sf::Color::Green);
+	// Init engine
+	Engine *engine = new Engine();
+	engine->init();
 
-	while (window.isOpen())
+	while (true)
 	{
-		sf::Event event;
-		while (window.pollEvent(event))
-		{
-			if (event.type == sf::Event::Closed)
-				window.close();
-		}
+		engine->update();
 
-		window.clear();
-		window.draw(shape);
-		window.display();
+		// TODO - Exit codes and stuff?
+		if (engine->engineShouldShutDown())
+			return -1;
 	}
 
 	return 0;
