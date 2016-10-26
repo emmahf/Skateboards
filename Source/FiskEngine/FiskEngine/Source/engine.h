@@ -19,11 +19,13 @@ public:
 	sf::RenderWindow *renderWindow() { return m_renderWindow; }
 	bool pollEvents();
 	void shutDownEngine() { m_quitRequested = true; }
+	sf::Font *getDefaultFont() { return m_debugFont; }
 
 private:
 	ConfigManager *m_configManager;
 	FileManager *m_fileManager;
 	sf::RenderWindow *m_renderWindow;
+	sf::Font *m_debugFont;
 
 	bool m_quitRequested;
 };

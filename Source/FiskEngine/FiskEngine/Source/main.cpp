@@ -5,7 +5,12 @@ int main()
 {
 	// Init engine
 	Engine *engine = new Engine();
-	engine->init();
+
+	if (engine->init() == false)
+	{
+		engine->fatalError("Error! Could not init engine!");
+		return -1;
+	}
 
 	while (true)
 	{

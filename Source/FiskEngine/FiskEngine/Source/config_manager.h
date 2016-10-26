@@ -1,5 +1,7 @@
 #pragma once
 #include <vector>
+#include <string>
+#include <sstream>
 
 class ConfigSetting
 {
@@ -27,6 +29,8 @@ public:
 	// Returns true on successful load - Probably should error out or something if false
 	bool loadDefaultConfig(const char *filename);
 
+	void debugAndTestCvars();
+
 	// If our local.cfg file is not found, create an empty default - Return false if it fails, probably should error out in that case
 	void createDefaultConfig();
 	void addConfigSetting(const char *name, const char *value);
@@ -34,11 +38,21 @@ public:
 	template <typename T>
 	T getSetting(const char *command)
 	{
+		T returnValue;
+
 		for (int i = 0; i < m_configSettings.size(); i++)
 		{
 			if (!strcmp(command, m_configSettings[i].getName()))
-				return m_configSettings[i].getValue();
-		}	
+			{
+				std::stringstream convertType(m_configSettings[i].getValue());
+				convertType >> returnValue;
+
+				return returnValue;
+			}
+				
+		}
+
+		return returnValue;
 	}
 
 private:

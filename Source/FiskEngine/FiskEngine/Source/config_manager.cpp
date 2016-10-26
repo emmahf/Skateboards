@@ -19,3 +19,12 @@ void ConfigManager::addConfigSetting(const char *name, const char *value)
 
 	m_configSettings.push_back(newConfigSetting);
 }
+
+void ConfigManager::debugAndTestCvars()
+{
+	// Get cvars as basic types
+	int testInt = getSetting<int>("test_int");
+	bool testBool = getSetting<bool>("test_bool");
+	float testFloat = getSetting<float>("test_float");
+	std::string testString = getSetting<std::string>("test_string");
+}
