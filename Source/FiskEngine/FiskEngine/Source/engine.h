@@ -1,6 +1,7 @@
 #pragma once
 #include "config_manager.h"
 #include "file_manager.h"
+#include "hexMap.h"
 #include <SFML/Graphics.hpp>
 
 class Engine
@@ -24,6 +25,8 @@ public:
 private:
 	ConfigManager *m_configManager;
 	FileManager *m_fileManager;
+
+	HexMap *m_debugTestMap;
 	sf::RenderWindow *m_renderWindow;
 	sf::Font *m_debugFont;
 

@@ -13,15 +13,7 @@ public:
 		m_cols(cols),
 		m_hexSize(size)
 	{	
-		/*
-		// Parall..: Rectangular map
-		for (int q = 0; q <= rows; q++) {
-			for (int r = 0; r <= cols; r++) {
-				m_hex.insert(Hex(q, r, -q - r));
-			}
-		}
-		*/
-		
+		// TODO : Make it possible to choose the layout type (form + flat/pointy)
 		for (int r = 0; r < rows ; r++) 
 		{
 			int r_offset = r >> 1; //  = floor(r/2)
@@ -29,6 +21,14 @@ public:
 				m_hex.insert(Hex(q, r, -q - r));
 			}
 		}
+
+		/* Parall..: Rectangular map
+		for (int q = 0; q <= rows; q++) {
+		for (int r = 0; r <= cols; r++) {
+		m_hex.insert(Hex(q, r, -q - r));
+		}
+		}
+		*/
 		
 	}
 	~HexMap();
@@ -40,8 +40,8 @@ public:
 	//TODO - make static and fix 
 	float *getPixelPositionOfHex(const Hex hex) {
 			float *pos = new float[2];
-			pos[0] = m_hexSize * sqrt(3) * (hex.x + hex.y / 2);
-			pos[1] = m_hexSize * 3 / 2 * hex.x;
+			pos[0] = m_hexSize * sqrt(3) * (hex.x + hex.y / 2.0);
+			pos[1] = m_hexSize * 3.0 / 2.0 * hex.y;
 			return pos;
 	};
 private:

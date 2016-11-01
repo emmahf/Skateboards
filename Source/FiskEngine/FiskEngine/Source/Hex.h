@@ -12,7 +12,7 @@ struct Hex
 
 	bool operator== (const Hex& h) const { return(x == h.x && y == h.y); }
 
-	std::string  toString() const { return ("hex: " + std::to_string(x) + " , " + std::to_string(y) ); }
+	std::string  toString() const { return ("hex(" + std::to_string(x) + "," + std::to_string(y) + ")"); }
 
 };
 

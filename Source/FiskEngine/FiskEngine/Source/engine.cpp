@@ -10,12 +10,15 @@ Engine::~Engine()
 	// TODO - Clear memory and stuff?
 }
 
+
+
 // Initalise whole engine
 bool Engine::init()
 {
 	m_fileManager = new FileManager();
 	m_configManager = new ConfigManager();
 	m_renderWindow = new sf::RenderWindow(sf::VideoMode(640, 480), "Fisk Engine");
+	m_debugTestMap = new HexMap(6,7,50.0);
 
 	m_configManager->addConfigSetting("test_string", "string");
 	m_configManager->addConfigSetting("test_bool", "true");
@@ -73,12 +76,34 @@ void Engine::update()
 	sf::Text text;
 	text.setFont(*getDefaultFont());
 
-	text.setString("Ye");
-	text.setCharacterSize(24);
+	text.setString("Hexes man!");
+	text.setCharacterSize(20);
 	text.setFillColor(sf::Color::Red);
 	text.setStyle(sf::Text::Bold | sf::Text::Underlined);
 
 	renderWindow()->clear();
+
+	// REMOVE!
+	{
+		sf::Text hexText;
+		hexText.setFont(*getDefaultFont());
+		hexText.setCharacterSize(12);
+		hexText.setFillColor(sf::Color::Blue);
+		hexText.setStyle(sf::Text::Bold);
+
+		int count = 0;
+		for (const Hex hex : *m_debugTestMap->getHexes())
+		{
+			count++;
+			hexText.setString(hex.toString());
+			float *pos = m_debugTestMap->getPixelPositionOfHex(hex);
+			//OutputDebugStringA(( hex.toString() + std::to_string(pos[0]) + "," + std::to_string(pos[1]) + "\n").c_str());
+			hexText.setPosition(pos[0], pos[1] + 50);
+			renderWindow()->draw(hexText);
+		}
+	}
+
+
 	renderWindow()->draw(text);
 	renderWindow()->display();
 }
