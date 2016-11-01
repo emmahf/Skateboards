@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-// Temp struct - cubic coordinates
+// Temp struct (cubic coordinates)
 struct Hex
 {	
 	const int x;
