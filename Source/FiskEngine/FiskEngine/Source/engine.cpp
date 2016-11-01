@@ -28,7 +28,6 @@ bool Engine::init()
 	// TODO - Use the file manager to load it properly instead of using this temporary path!
 	if (m_debugFont->loadFromFile("..\\..\\..\\Game\\fonts\\debugfont.ttf") == false)
 	{	
-	//C:\\Users\\Emma\\Documents\\Skateboards\\Game\\fonts
 		fatalError("Error! Could not load default debug font!");
 		return false;
 	}
