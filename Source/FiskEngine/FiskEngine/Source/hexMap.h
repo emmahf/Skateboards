@@ -26,7 +26,9 @@ public:
 	std::unordered_set<Hex> *getHexes() { return &m_hex; }
 	sf::CircleShape *getDebugHexagon() { return &m_debugHexagon; }
 	float getHexSize() { return m_hexSize; }
+	bool isHexOnMap(Hex h) { return m_hex.find(h) != m_hex.end(); }
 
+	//Todo: Use point helperclass?
 	float *getPixelPositionOfHex(const Hex hex) {
 			//Todo: This makes assumptions on x,y coordinate system and position of origin
 			float *pos = new float[2];
