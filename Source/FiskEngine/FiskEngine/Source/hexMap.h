@@ -1,6 +1,7 @@
 #pragma once
 
 #include <unordered_set>
+#include <SFML/Graphics.hpp>
 #include "Hex.h"
 
 
@@ -10,6 +11,8 @@ enum MapShape
 	MapShape_Parallell
 };
 
+// Basic structure of Hexmap
+// Note: This would be best to keep small so that it can be easily used for various purposes (AI, render etc)
 class HexMap
 {
 
@@ -21,6 +24,8 @@ public:
 
 	std::string getDebugString();
 	std::unordered_set<Hex> *getHexes() { return &m_hex; }
+	sf::CircleShape *getDebugHexagon() { return &m_debugHexagon; }
+	float getHexSize() { return m_hexSize; }
 
 	//TODO - make static and fix 
 	float *getPixelPositionOfHex(const Hex hex) {
@@ -36,5 +41,9 @@ private:
 	int m_cols;
 	float m_hexSize;
 	MapShape m_shape;
+
+	// TODO: Decide on how to render stuff
+	// Used for debug display of map
+	sf::CircleShape m_debugHexagon;
 };
 

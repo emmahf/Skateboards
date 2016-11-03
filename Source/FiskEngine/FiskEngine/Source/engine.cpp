@@ -18,7 +18,7 @@ bool Engine::init()
 	m_fileManager = new FileManager();
 	m_configManager = new ConfigManager();
 	m_renderWindow = new sf::RenderWindow(sf::VideoMode(640, 480), "Fisk Engine");
-	m_debugTestMap = new HexMap(6,7,50.0, MapShape_Rectangular);
+	m_debugTestMap = new HexMap(7, 9, 40.0, MapShape_Rectangular);
 
 	m_configManager->addConfigSetting("test_string", "string");
 	m_configManager->addConfigSetting("test_bool", "true");
@@ -87,18 +87,24 @@ void Engine::update()
 	{
 		sf::Text hexText;
 		hexText.setFont(*getDefaultFont());
-		hexText.setCharacterSize(12);
+		hexText.setCharacterSize(10);
 		hexText.setFillColor(sf::Color::Blue);
-		hexText.setStyle(sf::Text::Bold);
+		hexText.setStyle(sf::Text::Regular);
 
-		int count = 0;
+		float hexSize = m_debugTestMap->getHexSize();
+
+		sf::CircleShape hexShape = *m_debugTestMap->getDebugHexagon();
 		for (const Hex hex : *m_debugTestMap->getHexes())
 		{
-			count++;
 			hexText.setString(hex.toString());
 			float *pos = m_debugTestMap->getPixelPositionOfHex(hex);
+
 			//OutputDebugStringA(( hex.toString() + std::to_string(pos[0]) + "," + std::to_string(pos[1]) + "\n").c_str());
-			hexText.setPosition(pos[0], pos[1] + 50);
+			
+			hexShape.setPosition(pos[0], pos[1] + 50);
+			renderWindow()->draw(hexShape);
+
+			hexText.setPosition(pos[0] + hexSize/2.0, pos[1] + 50 + hexSize/2.0);
 			renderWindow()->draw(hexText);
 		}
 	}

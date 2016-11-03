@@ -8,6 +8,11 @@ HexMap::HexMap(int rows, int cols, float size, MapShape shape) :
 {
 	this->m_shape = shape;
 
+	m_debugHexagon = sf::CircleShape(size, 6);
+	m_debugHexagon.setFillColor(sf::Color(140, 250, 100));
+	m_debugHexagon.setOutlineColor(sf::Color::Blue);
+	m_debugHexagon.setOutlineThickness(2.0);
+
 	switch (m_shape) {
 
 	case MapShape_Rectangular:
