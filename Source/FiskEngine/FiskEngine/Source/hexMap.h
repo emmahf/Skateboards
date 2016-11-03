@@ -27,8 +27,8 @@ public:
 	sf::CircleShape *getDebugHexagon() { return &m_debugHexagon; }
 	float getHexSize() { return m_hexSize; }
 
-	//TODO - make static and fix 
 	float *getPixelPositionOfHex(const Hex hex) {
+			//Todo: This makes assumptions on x,y coordinate system and position of origin
 			float *pos = new float[2];
 			pos[0] = m_hexSize * sqrt(3.0) * (hex.x + hex.y / 2.0);
 			pos[1] = m_hexSize * 3.0 / 2.0 * hex.y;
