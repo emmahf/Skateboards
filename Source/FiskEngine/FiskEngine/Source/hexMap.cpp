@@ -1,6 +1,40 @@
 #include "hexMap.h"
 #include <string>
 
+HexMap::HexMap(int rows, int cols, float size, MapShape shape) :
+	m_rows(rows),
+	m_cols(cols),
+	m_hexSize(size)
+{
+	this->m_shape = shape;
+
+	switch (m_shape) {
+
+	case MapShape_Rectangular:
+
+		for (int r = 0; r < rows; r++)
+		{
+			int r_offset = r >> 1; //  = floor(r/2)
+			for (int q = -r_offset; q < cols - r_offset; q++) {
+				m_hex.insert(Hex(q, r, -q - r));
+			}
+		}
+		break;
+
+	case MapShape_Parallell:
+		for (int q = 0; q <= rows; q++) {
+			for (int r = 0; r <= cols; r++) {
+				m_hex.insert(Hex(q, r, -q - r));
+			}
+		}
+		break;
+
+	default:
+		break;
+
+	}
+
+}
 
 HexMap::~HexMap()
 {

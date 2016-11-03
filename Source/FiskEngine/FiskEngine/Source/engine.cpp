@@ -18,7 +18,7 @@ bool Engine::init()
 	m_fileManager = new FileManager();
 	m_configManager = new ConfigManager();
 	m_renderWindow = new sf::RenderWindow(sf::VideoMode(640, 480), "Fisk Engine");
-	m_debugTestMap = new HexMap(6,7,50.0);
+	m_debugTestMap = new HexMap(6,7,50.0, MapShape_Rectangular);
 
 	m_configManager->addConfigSetting("test_string", "string");
 	m_configManager->addConfigSetting("test_bool", "true");
