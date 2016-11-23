@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-
+#include "terrain.h"
 // Temp struct (cubic coordinates)
 // Many options, could
 // 1. Use array instead -> easier function
@@ -43,4 +43,6 @@ namespace std
 			return ((51 + std::hash<int>()(hex.x)) * 51 + std::hash<int>()(hex.y));
 		}
 	};
+
+
 }

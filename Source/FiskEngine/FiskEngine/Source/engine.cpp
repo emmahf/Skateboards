@@ -81,33 +81,10 @@ void Engine::update()
 	text.setFillColor(sf::Color::Red);
 	text.setStyle(sf::Text::Bold | sf::Text::Underlined);
 
-	renderWindow()->clear();
+	sf::RenderWindow* rw = renderWindow();
+	rw->clear();
 
-	// REMOVE!
-	{
-		sf::Text hexText;
-		hexText.setFont(*getDefaultFont());
-		hexText.setCharacterSize(10);
-		hexText.setFillColor(sf::Color::Blue);
-		hexText.setStyle(sf::Text::Regular);
-
-		float hexSize = m_debugTestMap->getHexSize();
-
-		sf::CircleShape hexShape = *m_debugTestMap->getDebugHexagon();
-		for (const Hex hex : *m_debugTestMap->getHexes())
-		{
-			hexText.setString(hex.toString());
-			float *pos = m_debugTestMap->getPixelPositionOfHex(hex);
-
-			//OutputDebugStringA(( hex.toString() + std::to_string(pos[0]) + "," + std::to_string(pos[1]) + "\n").c_str());
-			
-			hexShape.setPosition(pos[0], pos[1] + 50);
-			renderWindow()->draw(hexShape);
-
-			hexText.setPosition(pos[0] + hexSize/2.0, pos[1] + 50 + hexSize/2.0);
-			renderWindow()->draw(hexText);
-		}
-	}
+	m_debugTestMap->drawMap(rw, getDefaultFont());
 
 
 	renderWindow()->draw(text);
@@ -124,6 +101,15 @@ bool Engine::pollEvents()
 			renderWindow()->close();
 			shutDownEngine();
 			return false;
+		}
+		
+		if (event.type == sf::Event::MouseButtonPressed) {
+			if (event.mouseButton.button == sf::Mouse::Left) {
+
+				//Todo: deal with input properly
+				sf::Vector2i localPosition = sf::Mouse::getPosition(*renderWindow());
+				m_debugTestMap->debugMouseInput(localPosition);
+			}
 		}
 	}
 
