@@ -4,7 +4,7 @@
 NavGrid::NavGrid(int rows, int cols, float size, MapShape shape) :
 	m_rows(rows),
 	m_cols(cols),
-	m_hexSize(size)
+	m_hexRadius(size)
 {
 	this->m_shape = shape;
 
@@ -244,7 +244,7 @@ void NavGrid::drawMap(sf::RenderWindow *rw, sf::Font *debugFont) {
 			terrain.setPosition(pos[0], pos[1]);
 			rw->draw(terrain);
 
-			hexText.setPosition(pos[0] + m_hexSize / 2.0f, pos[1] + m_hexSize / 2.0f);
+			hexText.setPosition(pos[0] + m_hexRadius / 2.0f, pos[1] + m_hexRadius / 2.0f);
 			rw->draw(hexText);
 
 
@@ -252,7 +252,7 @@ void NavGrid::drawMap(sf::RenderWindow *rw, sf::Font *debugFont) {
 			{
 				hexText.setString(cameFrom->toString() + " " + std::to_string(tile.second->m_costSoFar));
 				hexText.setString(std::to_string(tile.second->m_costSoFar));
-				hexText.setPosition(pos[0] + m_hexSize / 2.0f, pos[1] + m_hexSize / 2.0f + 20);
+				hexText.setPosition(pos[0] + m_hexRadius / 2.0f, pos[1] + m_hexRadius / 2.0f + 20);
 				rw->draw(hexText);
 			}
 		}
@@ -268,9 +268,9 @@ void NavGrid::drawMap(sf::RenderWindow *rw, sf::Font *debugFont) {
 			{
 				float *posCameFrom = getPixelPositionOfHex(*cameFrom);
 				sf::Vertex line[2];
-				line[0].position = sf::Vector2f(pos[0] + m_hexSize, pos[1] + m_hexSize);
+				line[0].position = sf::Vector2f(pos[0] + m_hexRadius, pos[1] + m_hexRadius);
 				line[0].color = sf::Color::Red;
-				line[1].position = sf::Vector2f(posCameFrom[0] + m_hexSize, posCameFrom[1] + m_hexSize);
+				line[1].position = sf::Vector2f(posCameFrom[0] + m_hexRadius, posCameFrom[1] + m_hexRadius);
 				line[1].color = sf::Color::Red;
 				rw->draw(line, 2, sf::Lines);
 			}

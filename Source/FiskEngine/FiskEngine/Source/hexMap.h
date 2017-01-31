@@ -70,7 +70,7 @@ public:
 	HexData* getHexData(Hex h) { return m_hex[h]; };
 
 	sf::CircleShape *getDebugHexagon() { return &m_debugHexagon; }
-	float getHexSize() { return m_hexSize; }
+	float getHexSize() { return m_hexRadius; }
 	bool isHexOnMap(Hex h) { return m_hex.find(h) != m_hex.end(); }
 
 	void updateHexTerrain(Hex hex);
@@ -92,16 +92,16 @@ public:
 	float *getPixelPositionOfHex(const Hex hex) {
 			//Todo: This makes assumptions on x,y coordinate system and position of origin
 			float *pos = new float[2];
-			pos[0] = m_hexSize * sqrt(3.0f) * (hex.x + hex.y / 2.0f);
-			pos[1] = m_hexSize * 3.0f / 2.0f * hex.y;
+			pos[0] = m_hexRadius * sqrt(3.0f) * (hex.x + hex.y / 2.0f);
+			pos[1] = m_hexRadius * 3.0f / 2.0f * hex.y;
 			return pos;
 	};
 
 	//Todo: This is not correct
 	float *getCenterPixelPositionOfHex(const Hex hex) {
 		float *pos = new float[2];
-		pos[0] = m_hexSize * sqrt(3.0f) * (hex.x + hex.y / 2.0f) + m_hexSize/2.0f;
-		pos[1] = m_hexSize * 3.0f / 2.0f * hex.y + m_hexSize / 2.0f;
+		pos[0] = m_hexRadius * sqrt(3.0f) * (hex.x + hex.y / 2.0f) + m_hexRadius;
+		pos[1] = m_hexRadius * 3.0f / 2.0f * hex.y + m_hexRadius;
 		return pos;
 	};
 
@@ -118,8 +118,8 @@ public:
 		*/
 		
 		// Fuckin magic courtesy of someone called Charles Dambers. Branchless pixel -> hex ftw. 
-		float x = (px - m_hexSize) / (m_hexSize * sqrt(3.0f));
-		float y = (py - m_hexSize) / (m_hexSize * sqrt(3.0f));
+		float x = (px - m_hexRadius) / (m_hexRadius * sqrt(3.0f));
+		float y = (py - m_hexRadius) / (m_hexRadius * sqrt(3.0f));
 
 		float temp = floor(x + sqrt(3.0f) * y + 1.0f);
 		float r = floor((temp + floor(-x + sqrt(3.0f) * y + 1.0f)) / 3.0f);
@@ -151,7 +151,7 @@ private:
 	mutable std::unordered_map<Hex, HexData*> m_hex;
 	int m_rows;
 	int m_cols;
-	float m_hexSize;
+	float m_hexRadius;
 	MapShape m_shape;
 
 	// TODO: Decide on how to render stuff
