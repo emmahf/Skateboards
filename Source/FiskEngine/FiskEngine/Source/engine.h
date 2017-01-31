@@ -2,6 +2,7 @@
 #include "config_manager.h"
 #include "file_manager.h"
 #include "hexMap.h"
+#include "Enemies.h" //Move out of engine! 
 #include <SFML/Graphics.hpp>
 
 class Engine
@@ -29,6 +30,7 @@ private:
 	NavGrid *m_debugTestMap;
 	sf::RenderWindow *m_renderWindow;
 	sf::Font *m_debugFont;
+	Enemies *m_debugEnemies;
 
 	bool m_quitRequested;
 };

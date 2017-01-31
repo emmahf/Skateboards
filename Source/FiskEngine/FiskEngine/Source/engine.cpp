@@ -17,7 +17,7 @@ bool Engine::init()
 {
 	m_fileManager = new FileManager();
 	m_configManager = new ConfigManager();
-	m_renderWindow = new sf::RenderWindow(sf::VideoMode(640, 480), "Fisk Engine");  
+	m_renderWindow = new sf::RenderWindow(sf::VideoMode(640, 480), "Fisk Engine"); 
 
 	m_configManager->addConfigSetting("test_string", "string");
 	m_configManager->addConfigSetting("test_bool", "true");
@@ -34,10 +34,13 @@ bool Engine::init()
 		return false;
 	}
 
+	
+	//Things that should be created by Game and moved out of engine (probably)
+	
 	m_debugTestMap = new NavGrid(7, 9, 40.0, MapShape_Rectangular);
 	m_debugTestMap->computeDistanceField(Hex(3, 3));
 	m_debugTestMap->setGoal(3, 3);
-
+	m_debugEnemies = new Enemies(m_debugTestMap, 1);
 	return true;
 }
 
@@ -87,7 +90,15 @@ void Engine::update()
 	sf::RenderWindow* rw = renderWindow();
 	rw->clear();
 
+	//Todo: This should not be here but in Game?
+
+	// update
+	m_debugEnemies->update();
+
+	// draw
 	m_debugTestMap->drawMap(rw, getDefaultFont());
+	m_debugTestMap->setGoal(3,3);
+	m_debugEnemies->draw(rw);
 
 
 	renderWindow()->draw(text);
@@ -98,7 +109,7 @@ bool Engine::pollEvents()
 {
 	sf::Event event;
 	while (renderWindow()->pollEvent(event))
-	{
+	{	
 		if (event.type == sf::Event::Closed)
 		{
 			renderWindow()->close();
@@ -110,8 +121,8 @@ bool Engine::pollEvents()
 		sf::Vector2u currentWindowSize = renderWindow()->getSize();
 		sf::Vector2u originalWindowSize(640, 480); //Change to config setting
 
-		sf::Vector2f scale((float)currentWindowSize.x / (float)originalWindowSize.x, (float)currentWindowSize.y / (float)originalWindowSize.y);
-		localPosition.x = (int)round(localPosition.x / scale.x); //Really, there are no functions element mult for this?
+		sf::Vector2f scale( (float) currentWindowSize.x / (float) originalWindowSize.x, (float) currentWindowSize.y  / (float) originalWindowSize.y);
+		localPosition.x = (int) round(localPosition.x / scale.x); //Really, there are no functions element mult for this?
 		localPosition.y = (int)round(localPosition.y / scale.y);
 
 		if (event.type == sf::Event::MouseButtonPressed) {
@@ -121,7 +132,6 @@ bool Engine::pollEvents()
 			if (event.mouseButton.button == sf::Mouse::Left) {
 
 				//Todo: deal with input properly
-				sf::Vector2i localPosition = sf::Mouse::getPosition(*renderWindow());
 				m_debugTestMap->debugMouseInput(localPosition);
 			}
 
@@ -132,13 +142,26 @@ bool Engine::pollEvents()
 				m_debugTestMap->setGoal(localPosition);
 				m_debugTestMap->computeDistanceField();
 			}
-			
+
+			if (event.type == sf::Event::Resized)
+			{
+			}
+
 		}
+
+		//Re-initalize enemies with i
+		if (event.type == sf::Event::KeyPressed)
+		{
+			if (event.key.code == sf::Keyboard::I)
+			{
+				m_debugEnemies->initEnemiesSingleBurst(100);
+			}
+		}
+
 
 		Hex dh = m_debugTestMap->getHexFromPixelPosition(localPosition.x, localPosition.y);
 		m_debugTestMap->dq = dh.x;
 		m_debugTestMap->dr = dh.y;
-
 	}
 
 	return true;

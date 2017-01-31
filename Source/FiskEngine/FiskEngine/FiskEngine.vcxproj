@@ -131,18 +131,22 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\config_manager.cpp" />
+    <ClCompile Include="Source\Enemies.cpp" />
     <ClCompile Include="Source\engine.cpp" />
     <ClCompile Include="Source\file_manager.cpp" />
     <ClCompile Include="Source\Hex.cpp" />
     <ClCompile Include="Source\hexMap.cpp" />
     <ClCompile Include="Source\main.cpp" />
+    <ClCompile Include="Source\terrain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\config_manager.h" />
+    <ClInclude Include="Source\Enemies.h" />
     <ClInclude Include="Source\engine.h" />
     <ClInclude Include="Source\file_manager.h" />
     <ClInclude Include="Source\Hex.h" />
     <ClInclude Include="Source\hexMap.h" />
+    <ClInclude Include="Source\terrain.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
