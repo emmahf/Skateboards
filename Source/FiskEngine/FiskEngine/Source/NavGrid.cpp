@@ -1,4 +1,4 @@
-#include "hexMap.h"
+#include "NavGrid.h"
 #include <string>
 
 NavGrid::NavGrid(int rows, int cols, float size, MapShape shape) :

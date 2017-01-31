@@ -135,9 +135,9 @@
     <ClCompile Include="Source\engine.cpp" />
     <ClCompile Include="Source\file_manager.cpp" />
     <ClCompile Include="Source\Hex.cpp" />
-    <ClCompile Include="Source\hexMap.cpp" />
+    <ClCompile Include="Source\NavGrid.cpp" />
     <ClCompile Include="Source\main.cpp" />
-    <ClCompile Include="Source\terrain.cpp" />
+    <ClCompile Include="Source\Terrain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\config_manager.h" />
@@ -145,8 +145,8 @@
     <ClInclude Include="Source\engine.h" />
     <ClInclude Include="Source\file_manager.h" />
     <ClInclude Include="Source\Hex.h" />
-    <ClInclude Include="Source\hexMap.h" />
-    <ClInclude Include="Source\terrain.h" />
+    <ClInclude Include="Source\NavGrid.h" />
+    <ClInclude Include="Source\Terrain.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

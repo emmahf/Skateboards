@@ -1,7 +1,7 @@
 #pragma once
 #include "config_manager.h"
 #include "file_manager.h"
-#include "hexMap.h"
+#include "NavGrid.h"
 #include "Enemies.h" //Move out of engine! 
 #include <SFML/Graphics.hpp>
 

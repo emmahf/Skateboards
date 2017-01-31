@@ -1,6 +1,6 @@
 #pragma once
 
-#include "hexMap.h"
+#include "NavGrid.h"
 #include <SFML/Graphics.hpp>
 #include <random>
 
