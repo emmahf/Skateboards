@@ -17,8 +17,7 @@ bool Engine::init()
 {
 	m_fileManager = new FileManager();
 	m_configManager = new ConfigManager();
-	m_renderWindow = new sf::RenderWindow(sf::VideoMode(640, 480), "Fisk Engine");
-	m_debugTestMap = new HexMap(7, 9, 40.0, MapShape_Rectangular);
+	m_renderWindow = new sf::RenderWindow(sf::VideoMode(640, 480), "Fisk Engine");  
 
 	m_configManager->addConfigSetting("test_string", "string");
 	m_configManager->addConfigSetting("test_bool", "true");
@@ -34,6 +33,10 @@ bool Engine::init()
 		fatalError("Error! Could not load default debug font!");
 		return false;
 	}
+
+	m_debugTestMap = new NavGrid(7, 9, 40.0, MapShape_Rectangular);
+	m_debugTestMap->computeDistanceField(Hex(3, 3));
+	m_debugTestMap->setGoal(3, 3);
 
 	return true;
 }
@@ -102,15 +105,40 @@ bool Engine::pollEvents()
 			shutDownEngine();
 			return false;
 		}
-		
+
+		sf::Vector2i localPosition = sf::Mouse::getPosition(*renderWindow());
+		sf::Vector2u currentWindowSize = renderWindow()->getSize();
+		sf::Vector2u originalWindowSize(640, 480); //Change to config setting
+
+		sf::Vector2f scale((float)currentWindowSize.x / (float)originalWindowSize.x, (float)currentWindowSize.y / (float)originalWindowSize.y);
+		localPosition.x = (int)round(localPosition.x / scale.x); //Really, there are no functions element mult for this?
+		localPosition.y = (int)round(localPosition.y / scale.y);
+
 		if (event.type == sf::Event::MouseButtonPressed) {
+
+
+			//Update terrain
 			if (event.mouseButton.button == sf::Mouse::Left) {
 
 				//Todo: deal with input properly
 				sf::Vector2i localPosition = sf::Mouse::getPosition(*renderWindow());
 				m_debugTestMap->debugMouseInput(localPosition);
 			}
+
+			//Set goal
+			if (event.mouseButton.button == sf::Mouse::Right) {
+
+				//Todo: deal with input properly
+				m_debugTestMap->setGoal(localPosition);
+				m_debugTestMap->computeDistanceField();
+			}
+			
 		}
+
+		Hex dh = m_debugTestMap->getHexFromPixelPosition(localPosition.x, localPosition.y);
+		m_debugTestMap->dq = dh.x;
+		m_debugTestMap->dr = dh.y;
+
 	}
 
 	return true;

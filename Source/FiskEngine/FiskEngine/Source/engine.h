@@ -26,7 +26,7 @@ private:
 	ConfigManager *m_configManager;
 	FileManager *m_fileManager;
 
-	HexMap *m_debugTestMap;
+	NavGrid *m_debugTestMap;
 	sf::RenderWindow *m_renderWindow;
 	sf::Font *m_debugFont;
 

@@ -1,22 +1,24 @@
 #include "hexMap.h"
 #include <string>
 
-HexMap::HexMap(int rows, int cols, float size, MapShape shape) :
+NavGrid::NavGrid(int rows, int cols, float size, MapShape shape) :
 	m_rows(rows),
 	m_cols(cols),
 	m_hexSize(size)
 {
 	this->m_shape = shape;
 
+	dq = dr = 0;
 	m_debugHexagon = sf::CircleShape(size, 6);
 	m_debugHexagon.setFillColor(sf::Color(140, 250, 100));
 	m_debugHexagon.setOutlineColor(sf::Color::Blue);
 	m_debugHexagon.setOutlineThickness(2.0);
 
 	//Todo: Decide which structure to use
-	m_grassTerrain = new Terrain(size, sf::Color(140,250,100), TerrainType_Grass, 0.0, true);
-	m_waterTerrain = new Terrain(size, sf::Color(50, 50, 200), TerrainType_Water, 1.0, true);
-	m_mountainTerrain = new Terrain(size, sf::Color(140, 140, 140), TerrainType_Mountain, 0.0, false);
+	m_grassTerrain = new Terrain(size, sf::Color(140,250,100), TerrainType_Grass, 1.0, true);
+	m_waterTerrain = new Terrain(size, sf::Color(50, 50, 200), TerrainType_Water, 1.0, false);
+	m_mountainTerrain = new Terrain(size, sf::Color(140, 140, 140), TerrainType_Mountain, 5.0, true);
+
 
 	switch (m_shape) {
 
@@ -26,7 +28,9 @@ HexMap::HexMap(int rows, int cols, float size, MapShape shape) :
 		{
 			int r_offset = r >> 1; //  = floor(r/2)
 			for (int q = -r_offset; q < cols - r_offset; q++) {
-				m_hex.insert({ Hex(q, r, -q - r), m_grassTerrain });
+				Hex h = Hex(q, r, -q - r);
+				HexData *data = new HexData(m_grassTerrain, &h);
+				m_hex.insert({ h, data });
 			}
 		}
 		break;
@@ -34,7 +38,9 @@ HexMap::HexMap(int rows, int cols, float size, MapShape shape) :
 	case MapShape_Parallell:
 		for (int q = 0; q <= rows; q++) {
 			for (int r = 0; r <= cols; r++) {
-				m_hex.insert({ Hex(q, r, -q - r), m_grassTerrain });
+				Hex h = Hex(q, r, -q - r);
+				HexData *data = new HexData(m_grassTerrain, &h);
+				m_hex.insert({ h, data });
 			}
 		}
 		break;
@@ -46,36 +52,167 @@ HexMap::HexMap(int rows, int cols, float size, MapShape shape) :
 
 }
 
-HexMap::~HexMap()
+NavGrid::~NavGrid()
 {
 }
 
+void NavGrid::clearDistanceField() {
+
+	for (const std::pair<Hex, HexData*> tile : m_hex)
+	{
+		tile.second->m_cameFrom = nullptr;
+		tile.second->m_visited = false;
+		tile.second->m_costSoFar = 0.0;
+	}
+}
+
+
+#pragma optimize( "", off )
+void NavGrid::computeDistanceField(Hex destination) {
+
+	if (!this->isHexOnMap(destination))
+		return;
+
+	this->clearDistanceField();
+
+	m_hex[destination]->m_cameFrom = new Hex(destination.x, destination.y);
+	m_hex[destination]->m_visited = true;
+	m_hex[destination]->m_costSoFar = -1.0;
+
+	m_frontier.push(HexPriority(&destination, 0.0));
+
+	while (!m_frontier.empty())
+	{
+		HexPriority currentHexPriority = m_frontier.top();
+		Hex currentHex = *currentHexPriority.m_self;
+		std::vector<Hex> neighbours = currentHex.getNeighbours(currentHex);
+
+		if (currentHex.x == 4 && currentHex.y == 3) 
+		{
+			bool test = false;
+		}
+
+		m_frontier.pop();
+		for (auto neighbour : neighbours)
+		{	
+
+			if (neighbour.x == 4 && neighbour.y == 3)
+			{
+				bool test = false;
+			}
+
+			bool isHexOnMap = this->isHexOnMap(neighbour);
+			
+			if (!isHexOnMap)
+				continue;
+
+			double newCost = currentHexPriority.m_priority + m_hex[neighbour]->terrain->getMovementCost();
+
+			if (m_hex[neighbour]->terrain->isTraversable() &&
+				(m_hex[neighbour]->m_costSoFar == 0 || newCost < m_hex[neighbour]->m_costSoFar))
+			{
+					m_hex[neighbour]->m_cameFrom = new Hex(currentHex.x, currentHex.y);
+					m_hex[neighbour]->m_costSoFar = newCost;
+
+					HexPriority prio = HexPriority(new Hex(neighbour), newCost);
+					m_frontier.push(prio);
+			}
+		}
+
+	}
+
+}
+
+#pragma optimize( "", on )
+
+// Create flow map
+// Todo: Weigh by terrain
+/*
+void HexMap::computeDistanceField(Hex destination) {
+
+	if (!this->isHexOnMap(destination))
+		return;
+
+	this->clearDistanceField();
+
+	m_hex[destination]->m_cameFrom = new Hex(destination.x, destination.y);
+	m_hex[destination]->m_visited = true;
+	m_hex[destination]->m_costSoFar = 0.0;
+	m_frontier.push(destination);
+
+	while (!m_frontier.empty())
+	{
+		Hex currentHex = m_frontier.front();
+		std::vector<Hex> neighbours = currentHex.getNeighbours(currentHex);
+
+		for (auto neighbour : neighbours)
+		{
+			if (!this->isHexOnMap(neighbour))
+				continue;
+
+			double newCost = m_hex[currentHex]->m_costSoFar + m_hex[neighbour]->terrain->getMovementCost();
+
+			if (m_hex[neighbour]->m_visited == false)
+			{
+				m_hex[neighbour]->m_visited = true;
+				if (m_hex[neighbour]->terrain->isTraversable())
+				{
+					m_hex[neighbour]->m_cameFrom = new Hex(currentHex.x, currentHex.y);
+					m_hex[neighbour]->m_costSoFar = newCost;
+					m_frontier.push(neighbour);
+				}
+			}
+		}
+
+		m_frontier.pop();
+	}
+}
+*/
+void NavGrid::computeDistanceField()
+{
+	computeDistanceField(*m_goal);
+}
+
+void NavGrid::setGoal(sf::Vector2i localPosition)
+{
+	m_goal = new Hex(getHexFromPixelPosition(localPosition.x, localPosition.y));
+}
+
+void NavGrid::setGoal(int hx, int hy)
+{
+	m_goal = new Hex(hx, hy);
+}
 //Used for debug editing
-void HexMap::debugMouseInput(sf::Vector2i localPosition) {
+void NavGrid::debugMouseInput(sf::Vector2i localPosition) {
 	Hex hex = getHexFromPixelPosition(localPosition.x, localPosition.y);
+	if(!this->isHexOnMap(hex))
+		return;
+
 	updateHexTerrain(hex);
+	this->computeDistanceField();
 }
 
 //Used for debug editing
-void HexMap::updateHexTerrain(Hex hex) {
+void NavGrid::updateHexTerrain(Hex hex) {
 	
-	Terrain *terrain = m_hex[hex];
+	Terrain *terrain = m_hex[hex]->terrain;
 	switch (terrain->getTerrainType()) {
 		case TerrainType_Grass:
-			m_hex[hex] = m_waterTerrain;
+			m_hex[hex]->terrain = m_waterTerrain;
 			break;
 		case TerrainType_Water:
-			m_hex[hex] = m_mountainTerrain;
+			m_hex[hex]->terrain = m_mountainTerrain;
 			break;
 		case TerrainType_Mountain:
-			m_hex[hex] = m_grassTerrain;
+			m_hex[hex]->terrain = m_grassTerrain;
 			break;
 		default:
 			break;
 	}
 }
 
-void HexMap::drawMap(sf::RenderWindow *rw, sf::Font *debugFont) {
+//void HexMap::drawMap(sf::RenderWindow *rw, PathFinder *navGrid, sf::Font *debugFont) {
+void NavGrid::drawMap(sf::RenderWindow *rw, sf::Font *debugFont) {
 
 	// REMOVE!
 	{
@@ -85,29 +222,68 @@ void HexMap::drawMap(sf::RenderWindow *rw, sf::Font *debugFont) {
 		hexText.setFillColor(sf::Color::Black);
 		hexText.setStyle(sf::Text::Regular);
 
-		for (const std::pair<Hex, Terrain*> tile : m_hex)
+
+
+		for (const std::pair<Hex, HexData*> tile : m_hex)
 		{
 			Hex hex = tile.first;
-			sf::CircleShape terrain = tile.second->getShape();
+			sf::CircleShape terrain = tile.second->terrain->getShape();
 			hexText.setString(hex.toString());
 			float *pos = getPixelPositionOfHex(hex);
 
-			//OutputDebugStringA(( hex.toString() + std::to_string(pos[0]) + "," + std::to_string(pos[1]) + "\n").c_str());
+			
+			if (hex == Hex(dq,dr))
+				terrain.setFillColor(sf::Color::Red);
 
-			terrain.setPosition(pos[0], pos[1] + 50);
+			Hex* cameFrom = tile.second->m_cameFrom;
+
+			//OutputDebugStringA(( cameFrom->toString() + std::to_string(pos[0]) + "," + std::to_string(pos[1]) + "\n").c_str());
+
+
+
+			terrain.setPosition(pos[0], pos[1]);
 			rw->draw(terrain);
 
-			hexText.setPosition(pos[0] + m_hexSize / 2.0, pos[1] + 50 + m_hexSize / 2.0);
+			hexText.setPosition(pos[0] + m_hexSize / 2.0f, pos[1] + m_hexSize / 2.0f);
 			rw->draw(hexText);
+
+
+			if (cameFrom != nullptr) 
+			{
+				hexText.setString(cameFrom->toString() + " " + std::to_string(tile.second->m_costSoFar));
+				hexText.setString(std::to_string(tile.second->m_costSoFar));
+				hexText.setPosition(pos[0] + m_hexSize / 2.0f, pos[1] + m_hexSize / 2.0f + 20);
+				rw->draw(hexText);
+			}
 		}
+
+		//Draw flow
+		for (const std::pair<Hex, HexData*> tile : m_hex)
+		{
+			Hex hex = tile.first;
+			float *pos = getPixelPositionOfHex(hex);
+			Hex* cameFrom = tile.second->m_cameFrom;
+
+			if (cameFrom != nullptr)
+			{
+				float *posCameFrom = getPixelPositionOfHex(*cameFrom);
+				sf::Vertex line[2];
+				line[0].position = sf::Vector2f(pos[0] + m_hexSize, pos[1] + m_hexSize);
+				line[0].color = sf::Color::Red;
+				line[1].position = sf::Vector2f(posCameFrom[0] + m_hexSize, posCameFrom[1] + m_hexSize);
+				line[1].color = sf::Color::Red;
+				rw->draw(line, 2, sf::Lines);
+			}
+		}
+
 	}
 
 }
 
-std::string HexMap::getDebugString()
+std::string NavGrid::getDebugString()
 {	
 	std::string map;
-	for (const std::pair<Hex, Terrain*> tile : m_hex) 
+	for (const std::pair<Hex, HexData*> tile : m_hex)
 	{
 		map += (tile.first.toString() +  "\n");
 	}

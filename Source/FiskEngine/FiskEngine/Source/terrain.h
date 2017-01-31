@@ -19,7 +19,7 @@ public:
 		m_terrainShape = sf::CircleShape(size, 6);
 		m_terrainShape.setFillColor(color);
 		m_terrainShape.setOutlineColor(sf::Color::Blue);
-		m_terrainShape.setOutlineThickness(2.0);
+		m_terrainShape.setOutlineThickness(1.0);
 		m_type = type;
 		m_isTraversable = isTraversable;
 		m_movementCost = movementCost;			 
