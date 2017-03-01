@@ -72,6 +72,7 @@ public:
 	sf::CircleShape *getDebugHexagon() { return &m_debugHexagon; }
 	float getHexSize() { return m_hexRadius; }
 	bool isHexOnMap(Hex h) { return m_hex.find(h) != m_hex.end(); }
+	bool isHexTraversable(Hex hex);
 
 	void updateHexTerrain(Hex hex);
 

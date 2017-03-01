@@ -38,21 +38,24 @@ void Enemies::initEnemiesSingleBurst(int numberOfEnemies)
 	//Initalize enemies (here - single burst)
 	for (size_t i = 0; i < numberOfEnemies; i++)
 	{
-		Hex *h;
-		sf::Vector2f pos;
-		do
+		//Random generators
+		std::mt19937 randX(m_seed());
+		std::mt19937 randY(m_seed());
+
+		//Position
+		sf::Vector2i pos;
+		pos = sf::Vector2i(m_distX(randX), m_distY(randY));
+		Hex *h = &m_navGrid.getHexFromPixelPosition(pos.x, pos.y);
+
+		//Keep going until valid hex found (bad loop)
+		while (!m_navGrid.isHexOnMap(*h) || !m_navGrid.isHexTraversable(*h) )
 		{
-			std::mt19937 randX(m_seed());
-			std::mt19937 randY(m_seed());
-			pos = sf::Vector2f((float)m_distX(randX), (float)m_distY(randY));
+			pos = sf::Vector2i(m_distX(randX), m_distY(randY));
 			h = &m_navGrid.getHexFromPixelPosition(pos.x, pos.y);
-		} while (!m_navGrid.isHexOnMap(*h)); //Todo: Must also check that terrain is valid
+		}
 
-
-
+		// Set an inital velocity
 		sf::Vector2f vel(0, 0);
-
-
 		Hex* target = m_navGrid.getHexData(*h)->m_cameFrom;
 		if (target != nullptr)
 		{
@@ -60,7 +63,7 @@ void Enemies::initEnemiesSingleBurst(int numberOfEnemies)
 			vel = sf::Vector2f(posT[0] - pos.x, posT[1] - pos.y);
 			vel = norm(vel);
 		}
-		m_enemies[i] = EnemyData(vel, pos, 0.05, &m_navGrid.getHexFromPixelPosition(pos.x, pos.y));
+		m_enemies[i] = EnemyData(vel, sf::Vector2f(pos), 0.05, &m_navGrid.getHexFromPixelPosition(pos.x, pos.y));
 	}
 }
 
@@ -77,7 +80,7 @@ void Enemies::update()
 		m_enemies[i].position += m_enemies[i].velocity*m_enemies[i].speed; // * deltaTime; //(Todo: should depend on simtime - need to decide how to do sim in engine
 		
 		//Check if need to update target
-		Hex currentHex = m_navGrid.getHexFromPixelPosition(m_enemies[i].position.x, m_enemies[i].position.y);
+		Hex currentHex = m_navGrid.getHexFromPixelPosition( m_enemies[i].position.x, m_enemies[i].position.y);
 
 		if(m_navGrid.isHexOnMap(currentHex)) // && m_enemies[i].currentHex != &currentHex)
 		{
@@ -88,6 +91,11 @@ void Enemies::update()
 				float *posT = m_navGrid.getCenterPixelPositionOfHex(*target);
 				m_enemies[i].velocity = sf::Vector2f(posT[0] - m_enemies[i].position.x, posT[1] - m_enemies[i].position.y);
 				m_enemies[i].velocity = norm(m_enemies[i].velocity);
+				m_enemies[i].currentHex = &currentHex;
+			}
+			else 
+			{
+				m_enemies[i].velocity = sf::Vector2f(0.0,0.0);
 				m_enemies[i].currentHex = &currentHex;
 			}
 		}

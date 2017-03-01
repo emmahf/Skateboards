@@ -182,6 +182,13 @@ void NavGrid::setGoal(int hx, int hy)
 {
 	m_goal = new Hex(hx, hy);
 }
+
+
+bool NavGrid::isHexTraversable(Hex hex)
+{
+	return isHexOnMap(hex) && m_hex[hex]->terrain->isTraversable();
+}
+
 //Used for debug editing
 void NavGrid::debugMouseInput(sf::Vector2i localPosition) {
 	Hex hex = getHexFromPixelPosition(localPosition.x, localPosition.y);
