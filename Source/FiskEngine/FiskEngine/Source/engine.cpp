@@ -1,6 +1,4 @@
 #include "engine.h"
-
-
 #define THEME_CONFIG_FILE "../../widgets/Black.conf"
 
 
@@ -116,7 +114,7 @@ FileManager *Engine::getFileManager()
 }
 
 void Engine::update()
-{
+{	
 	if (pollEvents() == false)
 		return;
 
@@ -150,6 +148,8 @@ void Engine::update()
 bool Engine::pollEvents()
 {
 	sf::Event event;
+
+
 	while (renderWindow()->pollEvent(event))
 	{
 		m_gui->handleEvent(event);
@@ -192,7 +192,6 @@ bool Engine::pollEvents()
 			}
 
 		}
-
 		//Re-initalize enemies with i
 		if (event.type == sf::Event::KeyPressed)
 		{
@@ -200,21 +199,19 @@ bool Engine::pollEvents()
 			{
 				m_debugEnemies->initEnemiesSingleBurst(100);
 			}
-			if (event.key.code == sf::Keyboard::S)
+			if (event.key.code == sf::Keyboard::F1)
 			{
 				m_debugTestMap->saveMapeToFile(m_gui->get<tgui::TextBox>("navGridNameInput")->getText());
 			}
-			if (event.key.code == sf::Keyboard::L)
-			{
-				m_debugTestMap->loadMap("NavGridTest");
-			}
+
 		}
-
-
 		Hex dh = m_debugTestMap->getHexFromPixelPosition(localPosition.x, localPosition.y);
 		m_debugTestMap->dq = dh.x;
 		m_debugTestMap->dr = dh.y;
 	}
 
+
+
+	
 	return true;
 }
