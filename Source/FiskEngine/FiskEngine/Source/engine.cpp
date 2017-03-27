@@ -18,7 +18,7 @@ bool Engine::init()
 	m_fileManager = new FileManager();
 	m_configManager = new ConfigManager();
 	m_renderWindow = new sf::RenderWindow(sf::VideoMode(640, 480), "Fisk Engine"); 
-
+	
 	m_configManager->addConfigSetting("test_string", "string");
 	m_configManager->addConfigSetting("test_bool", "true");
 	m_configManager->addConfigSetting("test_int", "5");
@@ -41,6 +41,13 @@ bool Engine::init()
 	m_debugTestMap->computeDistanceField(Hex(3, 3));
 	m_debugTestMap->setGoal(3, 3);
 	m_debugEnemies = new Enemies(m_debugTestMap, 1);
+
+
+	// Debug test file manager
+	//m_debugTestMap->saveMapeToFile(std::string("NavGrid"));
+	//m_debugTestMap->saveMapeToFile(std::string("NavGridTest"));
+	//m_debugTestMap->loadMap(std::string("NavGridTest"));
+
 	return true;
 }
 
@@ -155,6 +162,14 @@ bool Engine::pollEvents()
 			if (event.key.code == sf::Keyboard::I)
 			{
 				m_debugEnemies->initEnemiesSingleBurst(100);
+			}
+			if (event.key.code == sf::Keyboard::S)
+			{
+				m_debugTestMap->saveMapeToFile("NavGridTest");
+			}
+			if (event.key.code == sf::Keyboard::L)
+			{
+				m_debugTestMap->loadMap("NavGridTest");
 			}
 		}
 
