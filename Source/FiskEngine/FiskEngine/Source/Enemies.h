@@ -28,7 +28,7 @@ public:
 	void draw(sf::RenderWindow *rw);
 
 private:
-	NavGrid			m_navGrid;
+	NavGrid*		m_navGrid;
 	EnemyData		m_enemies[100]; //Todo: Dynamic, do we care?
 	unsigned int	m_aliveEnemies;
 	unsigned int	m_spawnRate;
