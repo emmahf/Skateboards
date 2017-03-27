@@ -322,7 +322,6 @@ void NavGrid::loadAvailableNavgrids()
 	FileManager::openFile(navGridDataPath, file);
 
 	std::string line;
-
 	while (std::getline(file, line))
 	{
 		m_availableNavgrids.push_back(line);
@@ -356,7 +355,12 @@ void NavGrid::writeAvailableNavgrids()
 
 
 bool NavGrid::saveMapeToFile(std::string fileName)
-{
+{	
+	// TODO: Proper error message
+	if (std::find(m_availableNavgrids.begin(), m_availableNavgrids.end(), fileName) != m_availableNavgrids.end())
+		return false;
+
+	m_availableNavgrids.push_back(fileName);
 	// This should come from a config or something
 	// --> The path should probably be constructed using a more clever macro/setting
 	// Note -> Relative paths start at Skateboards\Source\FiskEngine\FiskEngine (NOT IN SOURCE!)
@@ -381,6 +385,7 @@ bool NavGrid::saveMapeToFile(std::string fileName)
 	}
 
 	FileManager::closeFile(file);
+	writeAvailableNavgrids();
 }
 
 bool NavGrid::loadMap(std::string fileName)

@@ -42,12 +42,13 @@ bool Engine::init()
 	
 	//Things that should be created by Game and moved out of engine (probably)
 	
-	m_debugTestMap = new NavGrid(7, 9, 40.0, MapShape_Rectangular);
+	m_debugTestMap = new NavGrid(6, 9, 40.0, MapShape_Rectangular);
 	m_debugTestMap->computeDistanceField(Hex(3, 3));
 	m_debugTestMap->setGoal(3, 3);
 	NavGrid::loadAvailableNavgrids();
+	m_debugEnemies = new Enemies(m_debugTestMap, 1);
 
-
+	// GUI Stuff - should be moved away from here
 	// A way of loading maps
 	tgui::ComboBox::Ptr comboBox = tgui::ComboBox::create();
 	comboBox->setSize(120, 21);
@@ -57,10 +58,24 @@ bool Engine::init()
 		comboBox->addItem(file);
 	}
 	comboBox->connect("ItemSelected", &NavGrid::loadMap, m_debugTestMap);
-	//comboBox->connect("ItemSelected", &test);
+	
+	tgui::Label::Ptr label = tgui::Label::create();
+	label->setPosition(180, 400);
+	label->setTextColor(sf::Color(200, 200, 200));
+	//label->setTextSize(18); 
+	label->setText("SaveName");
 
+	tgui::TextBox::Ptr textBox = tgui::TextBox::create();
+	textBox->setSize(150, 21);
+	textBox->setPosition(300, 400);
+	textBox->setText("NavGridName");
+	textBox->setTextSize(16);
 	m_gui->add(comboBox);
-	m_debugEnemies = new Enemies(m_debugTestMap, 1);
+	m_gui->add(label);
+	m_gui->add(textBox, "navGridNameInput");
+
+
+
 
 	// Debug test file manager
 	//m_debugTestMap->saveMapeToFile(std::string("NavGrid"));
@@ -187,7 +202,7 @@ bool Engine::pollEvents()
 			}
 			if (event.key.code == sf::Keyboard::S)
 			{
-				m_debugTestMap->saveMapeToFile("NavGridTest");
+				m_debugTestMap->saveMapeToFile(m_gui->get<tgui::TextBox>("navGridNameInput")->getText());
 			}
 			if (event.key.code == sf::Keyboard::L)
 			{
