@@ -296,3 +296,110 @@ std::string NavGrid::getDebugString()
 	}
 	return map;
 }
+
+
+// 
+// Loading And Saving Data Files
+//
+bool NavGrid::saveMapeToFile(std::string fileName)
+{
+	// This should come from a config or something
+	// --> The path should probably be constructed using a more clever macro/setting
+	// Note -> Relative paths start at Skateboards\Source\FiskEngine\FiskEngine (NOT IN SOURCE!)
+	std::string navGridDataPath = NAVGRID_DATAPATH + fileName + ".txt";
+	const char * testCString = navGridDataPath.c_str();
+
+	//TODO: File must be cleared first
+
+	if (FileManager::fileExists(navGridDataPath.c_str()))
+		std::remove(navGridDataPath.c_str());
+
+	//Create new file
+	std::fstream file;
+	FileManager::createFile(navGridDataPath, file);
+	FileManager::openFile(navGridDataPath, file);
+
+	file.clear();
+
+	for (const std::pair<Hex, HexData*> tile : m_hex)
+	{
+		file << tile.first.x << " " << tile.first.y << " " << tile.first.z << " " << tile.second->terrain->getTerrainType() << std::endl;
+	}
+
+	FileManager::closeFile(file);
+}
+
+bool NavGrid::loadMap(std::string fileName)
+{
+	// This should come from a config or something
+	// --> The path should probably be constructed using a more clever macro/setting
+	// Note -> Relative paths start at Skateboards\Source\FiskEngine\FiskEngine (NOT IN SOURCE!)
+
+	std::string navGridDataPath = NAVGRID_DATAPATH + fileName + ".txt";
+	const char * testCString = navGridDataPath.c_str();
+
+
+	if (!FileManager::fileExists(navGridDataPath.c_str()))
+		return false; //Should log error
+
+
+					  // Open file
+	std::fstream file;
+	FileManager::openFile(navGridDataPath, file);
+
+	std::string line;
+
+	bool fileLoadedCorrectly = true;
+
+
+	std::unordered_map<Hex, HexData*> m_hexTemp;
+	//m_hex.clear();
+	while (std::getline(file, line))
+	{
+
+		//			OutputDebugStringA(line.c_str());
+		//			OutputDebugStringA(std::string("\n").c_str());
+
+		std::istringstream iss(line);
+		int x, y, z, terrainType;
+		if (iss >> x >> y >> z >> terrainType)
+		{
+			Hex h = Hex(x, y, z);
+			//Todo: This needs to be done in a better way. Probably need to store terrains in a more data friendly format too so we can load them and not hardcode them.
+			switch (terrainType)
+			{
+			case TerrainType_Grass:
+				m_hexTemp.insert({ h, new HexData(m_grassTerrain, &h) });
+				break;
+			case TerrainType_Mountain:
+				m_hexTemp.insert({ h, new HexData(m_mountainTerrain, &h) });
+				break;
+			case TerrainType_Water:
+				m_hexTemp.insert({ h, new HexData(m_waterTerrain, &h) });
+				break;
+			default:
+				//Todo: Error message
+				fileLoadedCorrectly = false;
+				break;
+			}
+
+		}
+		else {
+			fileLoadedCorrectly = false;
+		}
+	}
+
+
+	FileManager::closeFile(file);
+
+
+	if (fileLoadedCorrectly)
+	{
+		m_hex.clear();
+		m_hex = m_hexTemp;
+	}
+
+	computeDistanceField(*m_goal);
+
+	return true;
+}
