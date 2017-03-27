@@ -1,6 +1,10 @@
 #include "NavGrid.h"
 #include <string>
 
+
+const std::string NavGrid::NAVGRID_DATAPATH = "..\\..\\..\\Game\\NavGridData\\";
+std::vector<std::string> NavGrid::m_availableNavgrids;
+
 NavGrid::NavGrid(int rows, int cols, float size, MapShape shape) :
 	m_rows(rows),
 	m_cols(cols),
@@ -301,6 +305,56 @@ std::string NavGrid::getDebugString()
 // 
 // Loading And Saving Data Files
 //
+
+
+void NavGrid::loadAvailableNavgrids()
+{
+	std::string navGridDataPath = NAVGRID_DATAPATH + "Navgrids.txt";
+	const char * testCString = navGridDataPath.c_str();
+
+/*
+	if (!FileManager::fileExists(navGridDataPath.c_str()))
+		return false; //Should log error
+*/
+
+	// Open file
+	std::fstream file;
+	FileManager::openFile(navGridDataPath, file);
+
+	std::string line;
+
+	while (std::getline(file, line))
+	{
+		m_availableNavgrids.push_back(line);
+	}
+	FileManager::closeFile(file);
+
+}
+
+void NavGrid::writeAvailableNavgrids()
+{
+	std::string navGridDataPath = NAVGRID_DATAPATH + "Navgrids.txt";
+	const char * testCString = navGridDataPath.c_str();
+
+	/*
+	if (!FileManager::fileExists(navGridDataPath.c_str()))
+	return false; //Should log error
+	*/
+
+	// Open file
+	std::fstream file;
+	FileManager::openFile(navGridDataPath, file);
+	file.clear();
+	std::string line;
+
+	for (auto fileName : m_availableNavgrids) 
+	{
+		file << fileName << std::endl;
+	}
+	FileManager::closeFile(file);
+}
+
+
 bool NavGrid::saveMapeToFile(std::string fileName)
 {
 	// This should come from a config or something

@@ -1,5 +1,9 @@
 #include "engine.h"
 
+
+#define THEME_CONFIG_FILE "../../widgets/Black.conf"
+
+
 Engine::Engine()
 {
 	m_quitRequested = false;
@@ -10,8 +14,6 @@ Engine::~Engine()
 	// TODO - Clear memory and stuff?
 }
 
-
-
 // Initalise whole engine
 bool Engine::init()
 {
@@ -20,6 +22,7 @@ bool Engine::init()
 	m_renderWindow = new sf::RenderWindow(sf::VideoMode(640, 480), "Fisk Engine"); 
 
 	m_gui = new tgui::Gui(*m_renderWindow);
+
 
 	m_configManager->addConfigSetting("test_string", "string");
 	m_configManager->addConfigSetting("test_bool", "true");
@@ -42,8 +45,22 @@ bool Engine::init()
 	m_debugTestMap = new NavGrid(7, 9, 40.0, MapShape_Rectangular);
 	m_debugTestMap->computeDistanceField(Hex(3, 3));
 	m_debugTestMap->setGoal(3, 3);
-	m_debugEnemies = new Enemies(m_debugTestMap, 1);
+	NavGrid::loadAvailableNavgrids();
 
+
+	// A way of loading maps
+	tgui::ComboBox::Ptr comboBox = tgui::ComboBox::create();
+	comboBox->setSize(120, 21);
+	comboBox->setPosition(5, 400);
+	for (auto file : m_debugTestMap->m_availableNavgrids) 
+	{
+		comboBox->addItem(file);
+	}
+	comboBox->connect("ItemSelected", &NavGrid::loadMap, m_debugTestMap);
+	//comboBox->connect("ItemSelected", &test);
+
+	m_gui->add(comboBox);
+	m_debugEnemies = new Enemies(m_debugTestMap, 1);
 
 	// Debug test file manager
 	//m_debugTestMap->saveMapeToFile(std::string("NavGrid"));

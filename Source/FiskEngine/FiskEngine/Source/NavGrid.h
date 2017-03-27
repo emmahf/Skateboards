@@ -78,6 +78,9 @@ public:
 	void updateHexTerrain(Hex hex);
 
 	
+	static void loadAvailableNavgrids();
+	static void writeAvailableNavgrids();
+
 	bool saveMapeToFile(std::string fileName);
 	bool loadMap(std::string fileName);
 
@@ -146,6 +149,7 @@ public:
 	#pragma optimize( "", on )
 
 
+	static std::vector<std::string> m_availableNavgrids;
 
 private:
 
@@ -175,6 +179,7 @@ private:
 	std::priority_queue<HexPriority, std::vector<HexPriority>, LessThanByPriority> m_frontier;
 	std::vector<Hex> m_test;
 
-	const std::string NAVGRID_DATAPATH = "..\\..\\..\\Game\\NavGridData\\";
+
+	const static std::string NAVGRID_DATAPATH;
 };
 
