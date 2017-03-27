@@ -18,7 +18,9 @@ bool Engine::init()
 	m_fileManager = new FileManager();
 	m_configManager = new ConfigManager();
 	m_renderWindow = new sf::RenderWindow(sf::VideoMode(640, 480), "Fisk Engine"); 
-	
+
+	m_gui = new tgui::Gui(*m_renderWindow);
+
 	m_configManager->addConfigSetting("test_string", "string");
 	m_configManager->addConfigSetting("test_bool", "true");
 	m_configManager->addConfigSetting("test_int", "5");
@@ -108,6 +110,7 @@ void Engine::update()
 	m_debugEnemies->draw(rw);
 
 
+	m_gui->draw();
 	renderWindow()->draw(text);
 	renderWindow()->display();
 }
@@ -116,7 +119,9 @@ bool Engine::pollEvents()
 {
 	sf::Event event;
 	while (renderWindow()->pollEvent(event))
-	{	
+	{
+		m_gui->handleEvent(event);
+
 		if (event.type == sf::Event::Closed)
 		{
 			renderWindow()->close();

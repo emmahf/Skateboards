@@ -4,6 +4,7 @@
 #include "NavGrid.h"
 #include "Enemies.h" //Move out of engine! 
 #include <SFML/Graphics.hpp>
+#include <TGUI/TGUI.hpp>
 
 class Engine
 {
@@ -29,6 +30,7 @@ private:
 
 	NavGrid *m_debugTestMap;
 	sf::RenderWindow *m_renderWindow;
+	tgui::Gui * m_gui; 
 	sf::Font *m_debugFont;
 	Enemies *m_debugEnemies;
 
