@@ -43,7 +43,7 @@ bool Engine::init()
 	
 	//Things that should be created by Game and moved out of engine (probably)
 	
-	m_debugTestMap = new NavGrid(6, 9, 40.0, WINDOW_WIDTH/5, 50 , MapShape_Rectangular);
+	m_debugTestMap = new NavGrid(6, 7, 40.0, WINDOW_WIDTH/5, 50 , MapShape_Rectangular);
 	m_debugTestMap->computeDistanceField(Hex(3, 3));
 	m_debugTestMap->setGoal(3, 3);
 	NavGrid::loadAvailableNavgrids();
