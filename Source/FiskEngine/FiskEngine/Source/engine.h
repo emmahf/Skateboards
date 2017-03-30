@@ -25,12 +25,65 @@ public:
 	sf::Font *getDefaultFont() { return m_debugFont; }
 
 private:
+
+	// Todo: Move gui-stuff somwhere else
+
+	void buildNavGridEditPandel(
+		tgui::Gui &gui, 
+		std::vector<std::string> maps,
+		int placeX,
+		int placeY,
+		int sizeX,
+		int sizeY) 
+	{
+		tgui::Panel::Ptr panel = tgui::Panel::create();
+		panel->setSize(sizeX, sizeY);
+		panel->setPosition(0, 0);
+
+		int sizeTextBox = 21;
+		
+		//Todo: padding should be defined in a style config somewhere?
+		int paddingLeft = 5;
+		int paddingTop = 5;
+		int paddingBottom = 5;
+
+		// GUI Stuff - should be moved away from here
+		// A way of loading maps
+		tgui::ComboBox::Ptr comboBox = tgui::ComboBox::create();
+		comboBox->setSize(sizeX - paddingLeft, sizeTextBox);
+		comboBox->setPosition(placeX + paddingLeft, placeY + paddingTop);
+		for (auto file : maps)
+		{
+			comboBox->addItem(file);
+		}
+		comboBox->connect("ItemSelected", &NavGrid::loadMap, m_debugTestMap);
+
+		tgui::Label::Ptr label = tgui::Label::create();
+		label->setPosition(placeX + paddingLeft, placeY + paddingTop + sizeTextBox);
+		//label->setTextSize(18); 
+		label->setText("SaveName");
+
+		tgui::TextBox::Ptr textBox = tgui::TextBox::create();
+		textBox->setSize(sizeX - paddingLeft, sizeTextBox);
+		textBox->setPosition(placeX + paddingLeft, placeY + paddingTop*2 + sizeTextBox*2);
+		textBox->setText("NavGridName");
+		textBox->setTextSize(16);
+
+
+		panel->add(comboBox);
+		panel->add(label);
+		panel->add(textBox, "navGridNameInput");
+
+
+		gui.add(panel, "EditNavgridPanel");
+	}
+
 	ConfigManager *m_configManager;
 	FileManager *m_fileManager;
+	sf::RenderWindow *m_renderWindow;
+	tgui::Gui * m_gui;
 
 	NavGrid *m_debugTestMap;
-	sf::RenderWindow *m_renderWindow;
-	tgui::Gui * m_gui; 
 	sf::Font *m_debugFont;
 	Enemies *m_debugEnemies;
 
