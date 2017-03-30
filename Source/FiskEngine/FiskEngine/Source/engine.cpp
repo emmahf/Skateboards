@@ -1,6 +1,9 @@
 #include "engine.h"
 #define THEME_CONFIG_FILE "../../widgets/Black.conf"
 
+//TODO: Use the config stuff
+#define WINDOW_WIDTH 640
+#define WINDOW_HEIGHT 480
 
 Engine::Engine()
 {
@@ -17,7 +20,7 @@ bool Engine::init()
 {
 	m_fileManager = new FileManager();
 	m_configManager = new ConfigManager();
-	m_renderWindow = new sf::RenderWindow(sf::VideoMode(640, 480), "Fisk Engine"); 
+	m_renderWindow = new sf::RenderWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Fisk Engine");
 
 	m_gui = new tgui::Gui(*m_renderWindow);
 
@@ -40,41 +43,14 @@ bool Engine::init()
 	
 	//Things that should be created by Game and moved out of engine (probably)
 	
-	m_debugTestMap = new NavGrid(6, 9, 40.0, MapShape_Rectangular);
+	m_debugTestMap = new NavGrid(6, 9, 40.0, WINDOW_WIDTH/5, 50 , MapShape_Rectangular);
 	m_debugTestMap->computeDistanceField(Hex(3, 3));
 	m_debugTestMap->setGoal(3, 3);
 	NavGrid::loadAvailableNavgrids();
 	m_debugEnemies = new Enemies(m_debugTestMap, 1);
-
-	// GUI Stuff - should be moved away from here
-	// A way of loading maps
-	tgui::ComboBox::Ptr comboBox = tgui::ComboBox::create();
-	comboBox->setSize(120, 21);
-	comboBox->setPosition(5, 400);
-	for (auto file : m_debugTestMap->m_availableNavgrids) 
-	{
-		comboBox->addItem(file);
-	}
-	comboBox->connect("ItemSelected", &NavGrid::loadMap, m_debugTestMap);
 	
-	tgui::Label::Ptr label = tgui::Label::create();
-	label->setPosition(180, 400);
-	label->setTextColor(sf::Color(200, 200, 200));
-	//label->setTextSize(18); 
-	label->setText("SaveName");
 
-	tgui::TextBox::Ptr textBox = tgui::TextBox::create();
-	textBox->setSize(150, 21);
-	textBox->setPosition(300, 400);
-	textBox->setText("NavGridName");
-	textBox->setTextSize(16);
-	m_gui->add(comboBox);
-	m_gui->add(label);
-	m_gui->add(textBox, "navGridNameInput");
-
-
-
-
+	buildNavGridEditPandel(*m_gui, m_debugTestMap->m_availableNavgrids, 0, 0, WINDOW_WIDTH/5, WINDOW_HEIGHT);
 	// Debug test file manager
 	//m_debugTestMap->saveMapeToFile(std::string("NavGrid"));
 	//m_debugTestMap->saveMapeToFile(std::string("NavGridTest"));
@@ -163,7 +139,7 @@ bool Engine::pollEvents()
 
 		sf::Vector2i localPosition = sf::Mouse::getPosition(*renderWindow());
 		sf::Vector2u currentWindowSize = renderWindow()->getSize();
-		sf::Vector2u originalWindowSize(640, 480); //Change to config setting
+		sf::Vector2u originalWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT); //Change to config setting
 
 		sf::Vector2f scale( (float) currentWindowSize.x / (float) originalWindowSize.x, (float) currentWindowSize.y  / (float) originalWindowSize.y);
 		localPosition.x = (int) round(localPosition.x / scale.x); //Really, there are no functions element mult for this?

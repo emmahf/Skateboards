@@ -5,7 +5,14 @@
 const std::string NavGrid::NAVGRID_DATAPATH = "..\\..\\..\\Game\\NavGridData\\";
 std::vector<std::string> NavGrid::m_availableNavgrids;
 
-NavGrid::NavGrid(int rows, int cols, float size, MapShape shape) :
+NavGrid::NavGrid(
+	int rows,
+	int cols,
+	float size,
+	int positionX, //left corner position of map
+	int positionY, //top corner positon of map
+	MapShape shape) :
+
 	m_rows(rows),
 	m_cols(cols),
 	m_hexRadius(size)
@@ -13,6 +20,10 @@ NavGrid::NavGrid(int rows, int cols, float size, MapShape shape) :
 	this->m_shape = shape;
 
 	dq = dr = 0;
+	
+	m_positionX = positionX;
+	m_positionY = positionY;
+	
 	m_debugHexagon = sf::CircleShape(size, 6);
 	m_debugHexagon.setFillColor(sf::Color(140, 250, 100));
 	m_debugHexagon.setOutlineColor(sf::Color::Blue);

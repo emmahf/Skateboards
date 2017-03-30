@@ -59,7 +59,7 @@ class NavGrid
 
 public:
 
-	NavGrid(int rows, int cols, float size, MapShape shape);
+	NavGrid(int rows, int cols, float size, int positionX, int positionY,  MapShape shape);
 	~NavGrid();
 
 	void clearDistanceField();
@@ -100,16 +100,16 @@ public:
 	float *getPixelPositionOfHex(const Hex hex) {
 			//Todo: This makes assumptions on x,y coordinate system and position of origin
 			float *pos = new float[2];
-			pos[0] = m_hexRadius * sqrt(3.0f) * (hex.x + hex.y / 2.0f);
-			pos[1] = m_hexRadius * 3.0f / 2.0f * hex.y;
+			pos[0] = m_positionX + m_hexRadius * sqrt(3.0f) * (hex.x + hex.y / 2.0f);
+			pos[1] = m_positionY + m_hexRadius * 3.0f / 2.0f * hex.y;
 			return pos;
 	};
 
 	//Todo: This is not correct
 	float *getCenterPixelPositionOfHex(const Hex hex) {
 		float *pos = new float[2];
-		pos[0] = m_hexRadius * sqrt(3.0f) * (hex.x + hex.y / 2.0f) + m_hexRadius;
-		pos[1] = m_hexRadius * 3.0f / 2.0f * hex.y + m_hexRadius;
+		pos[0] = m_positionX + m_hexRadius * sqrt(3.0f) * (hex.x + hex.y / 2.0f) + m_hexRadius;
+		pos[1] = m_positionY + m_hexRadius * 3.0f / 2.0f * hex.y + m_hexRadius;
 		return pos;
 	};
 
@@ -126,8 +126,8 @@ public:
 		*/
 		
 		// Fuckin magic courtesy of someone called Charles Dambers. Branchless pixel -> hex ftw. 
-		float x = (px - m_hexRadius) / (m_hexRadius * sqrt(3.0f));
-		float y = (py - m_hexRadius) / (m_hexRadius * sqrt(3.0f));
+		float x = ((px - m_positionX)-m_hexRadius) / (m_hexRadius * sqrt(3.0f));// +m_positionX;
+		float y = ((py - m_positionY)- m_hexRadius) / (m_hexRadius * sqrt(3.0f));
 
 		float temp = floor(x + sqrt(3.0f) * y + 1.0f);
 		float r = floor((temp + floor(-x + sqrt(3.0f) * y + 1.0f)) / 3.0f);
@@ -162,6 +162,12 @@ private:
 	int m_cols;
 	float m_hexRadius;
 	MapShape m_shape;
+
+	// Top left corner of map
+	//	hould not be member of class but argument of draw function?
+	int m_positionX;
+	int m_positionY;
+
 
 	// TODO: Decide on how to render stuff
 	// Used for debug display of map
