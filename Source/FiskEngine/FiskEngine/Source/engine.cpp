@@ -1,10 +1,6 @@
 #include "engine.h"
 #define THEME_CONFIG_FILE "../../widgets/Black.conf"
 
-//TODO: Use the config stuff
-#define WINDOW_WIDTH 640
-#define WINDOW_HEIGHT 480
-
 Engine::Engine()
 {
 	m_quitRequested = false;
@@ -21,8 +17,6 @@ bool Engine::init()
 	m_fileManager = new FileManager();
 	m_configManager = new ConfigManager();
 	m_renderWindow = new sf::RenderWindow(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Fisk Engine");
-
-	m_gui = new tgui::Gui(*m_renderWindow);
 
 
 	m_configManager->addConfigSetting("test_string", "string");
@@ -50,7 +44,10 @@ bool Engine::init()
 	m_debugEnemies = new Enemies(m_debugTestMap, 1);
 	
 
-	buildNavGridEditPandel(*m_gui, m_debugTestMap->m_availableNavgrids, 0, 0, WINDOW_WIDTH/5, WINDOW_HEIGHT);
+
+	m_gui = new testGui(m_renderWindow, WINDOW_WIDTH, WINDOW_HEIGHT);
+	m_gui->init(m_debugTestMap);
+
 	// Debug test file manager
 	//m_debugTestMap->saveMapeToFile(std::string("NavGrid"));
 	//m_debugTestMap->saveMapeToFile(std::string("NavGridTest"));
@@ -117,6 +114,7 @@ void Engine::update()
 
 
 	m_gui->draw();
+	//OutputDebugStringA("Drawiiing!");
 	renderWindow()->draw(text);
 	renderWindow()->display();
 }
@@ -177,7 +175,7 @@ bool Engine::pollEvents()
 			}
 			if (event.key.code == sf::Keyboard::F1)
 			{
-				m_debugTestMap->saveMapeToFile(m_gui->get<tgui::TextBox>("navGridNameInput")->getText());
+//				m_debugTestMap->saveMapeToFile(m_gui->get<tgui::TextBox>("navGridNameInput")->getText());
 			}
 
 		}

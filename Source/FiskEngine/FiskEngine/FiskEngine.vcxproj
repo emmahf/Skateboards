@@ -134,6 +134,7 @@
     <ClCompile Include="Source\Enemies.cpp" />
     <ClCompile Include="Source\engine.cpp" />
     <ClCompile Include="Source\file_manager.cpp" />
+    <ClCompile Include="Source\Gui.cpp" />
     <ClCompile Include="Source\Hex.cpp" />
     <ClCompile Include="Source\NavGrid.cpp" />
     <ClCompile Include="Source\main.cpp" />
@@ -144,6 +145,7 @@
     <ClInclude Include="Source\Enemies.h" />
     <ClInclude Include="Source\engine.h" />
     <ClInclude Include="Source\file_manager.h" />
+    <ClInclude Include="Source\Gui.h" />
     <ClInclude Include="Source\Hex.h" />
     <ClInclude Include="Source\NavGrid.h" />
     <ClInclude Include="Source\Terrain.h" />
