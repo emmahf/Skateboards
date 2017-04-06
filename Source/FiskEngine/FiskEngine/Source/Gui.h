@@ -2,7 +2,6 @@
 #pragma once
 #include <TGUI/TGUI.hpp>
 #include "NavGrid.h"
-#include "windows.h"
 
 
 using loadMapPtr = bool(NavGrid::*)(std::string);
@@ -45,7 +44,6 @@ public:
 
 	void draw()
 	{
-		OutputDebugStringA("Drawiiing! \n");
 		m_gui->draw();
 	}
 
