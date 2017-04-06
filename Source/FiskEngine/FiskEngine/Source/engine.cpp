@@ -45,7 +45,7 @@ bool Engine::init()
 	
 
 
-	m_gui = new testGui(m_renderWindow, WINDOW_WIDTH, WINDOW_HEIGHT);
+	m_gui = new Gui(m_renderWindow, WINDOW_WIDTH, WINDOW_HEIGHT);
 	m_gui->init(m_debugTestMap);
 
 	// Debug test file manager

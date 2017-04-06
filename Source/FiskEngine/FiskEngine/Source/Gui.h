@@ -8,12 +8,12 @@ using loadMapPtr = bool(NavGrid::*)(std::string);
 using saveMapPtr = bool(NavGrid::*)(std::string);
 
 // Todo: This should be moved out into the game
-class testGui 
+class Gui 
 {
 
 public:
 
-	testGui(sf::RenderWindow * renderWindow, int windowWidth, int windowHeight) :
+	Gui(sf::RenderWindow * renderWindow, int windowWidth, int windowHeight) :
 		m_rw(renderWindow),
 		m_windowWidth(windowWidth),
 		m_windowHeight(windowHeight)
@@ -22,7 +22,7 @@ public:
 			
 	};
 
-	~testGui() {};
+	~Gui() {};
 
 	void init(NavGrid *grid)
 	{

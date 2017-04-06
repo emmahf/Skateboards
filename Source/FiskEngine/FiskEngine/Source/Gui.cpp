@@ -3,10 +3,10 @@
 
 // Init static state
 
-std::string testGui::m_saveFileName = "";
+std::string Gui::m_saveFileName = "";
 
 // Build panels
-void testGui::buildNavGridEditPandel(
+void Gui::buildNavGridEditPandel(
 	std::vector<std::string> maps,
 	loadMapPtr loadMapFunction,
 	NavGrid *grid,
@@ -50,7 +50,7 @@ void testGui::buildNavGridEditPandel(
 	textBox->setText("NavGridName");
 	m_saveFileName = ("NavGridName");
 	textBox->setTextSize(16);
-	textBox->connect("TextChanged", &testGui::updateSaveName);
+	textBox->connect("TextChanged", &Gui::updateSaveName);
 	
 	panel->add(comboBox);
 	panel->add(label);
@@ -59,7 +59,7 @@ void testGui::buildNavGridEditPandel(
 
 
 	tgui::Button::Ptr saveButton = tgui::Button::create();
-	saveButton->connect("pressed", &testGui::saveMapWrapperFunction, grid, saveMapFunction); //, saveMapFunction);
+	saveButton->connect("pressed", &Gui::saveMapWrapperFunction, grid, saveMapFunction); //, saveMapFunction);
 
 
 	saveButton->setSize(sizeX - paddingLeft * 2, sizeTextBox);

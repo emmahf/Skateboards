@@ -41,7 +41,7 @@ private:
 	ConfigManager *m_configManager;
 	FileManager *m_fileManager;
 	sf::RenderWindow *m_renderWindow;
-	testGui * m_gui;
+	Gui * m_gui;
 
 	NavGrid *m_debugTestMap;
 	sf::Font *m_debugFont;
