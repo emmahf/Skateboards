@@ -397,6 +397,8 @@ bool NavGrid::saveMapeToFile(std::string fileName)
 
 	FileManager::closeFile(file);
 	writeAvailableNavgrids();
+
+	return true;
 }
 
 bool NavGrid::loadMap(std::string fileName)
