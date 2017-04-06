@@ -32,12 +32,7 @@ public:
 	sf::Font *getDefaultFont() { return m_debugFont; }
 
 private:
-
-	std::string * getCurrentText(tgui::Panel::Ptr * panel)
-	{
-		return  & ( std::string((*panel)->get<tgui::TextBox>("navGridNameInput")->getText() ));
-	}
-
+	
 	ConfigManager *m_configManager;
 	FileManager *m_fileManager;
 	sf::RenderWindow *m_renderWindow;
